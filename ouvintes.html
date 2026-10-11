@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOVEM PAN NACIONAL PLAYER - Ouvinte</title>
+    <!-- Google Fonts para um design premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #0b0f19;
+            --bg-card: #151d30;
+            --cor-primaria: #ff3333;
+            --cor-primaria-hover: #e62e2e;
+            --cor-sucesso: #00e676;
+            --texto-principal: #ffffff;
+            --texto-secundario: #8a99ad;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-principal);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Container Principal do Player */
+        .player-container {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Status de Conexão com Bolinha Piscando */
+        .status-conexao {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            padding: 8px 16px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+        }
+
+        .bolinha-piscando {
+            width: 10px;
+            height: 10px;
+            background-color: var(--cor-sucesso);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cor-sucesso);
+            animation: pulsar 1.5s infinite alternate;
+        }
+
+        .status-texto {
+            color: var(--cor-sucesso);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Logo e Informações da Rádio */
+        .radio-logo {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--cor-primaria), #ff6b6b);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(255, 51, 51, 0.3);
+            font-size: 2rem;
+        }
+
+        .radio-titulo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .radio-subtitulo {
+            color: var(--texto-secundario);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+            padding: 0 10px;
+            line-height: 1.4;
+        }
+
+        /* Controles de Áudio */
+        .controles {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .btn-play-pause {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--cor-primaria);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(255, 51, 51, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-play-pause:hover {
+            background-color: var(--cor-primaria-hover);
+            transform: scale(1.05);
+        }
+
+        .btn-play-pause svg {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+        }
+
+        /* Controle de Volume Slim */
+        .volume-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .volume-icon {
+            color: var(--texto-secundario);
+            display: flex;
+            align-items: center;
+        }
+
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--cor-primaria);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Contador de Ouvintes Integrado */
+        .ouvintes-badge {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .ouvintes-badge span {
+            color: var(--texto-principal);
+            font-weight: 800;
+        }
+
+        /* Rodapé de Background Técnico */
+        .bg-audio-notice {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+            max-width: 350px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Animações */
+        @keyframes pulsar {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.5;
+                box-shadow: 0 0 4px var(--cor-sucesso);
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+                box-shadow: 0 0 14px var(--cor-sucesso);
+            }
+        }
+
+        /* Suporte ao Modo Background (Oculto) */
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container Principal do Ouvinte -->
+    <div class="player-container">
+        
+        <!-- Status Piscante Solicitado -->
+        <div class="status-conexao">
+            <div class="bolinha-piscando"></div>
+            <div class="status-texto">Ao Vivo</div>
+        </div>
+
+        <!-- Logo Iconográfico -->
+        <div class="radio-logo">📻</div>
+
+        <!-- Título e Subtítulo Personalizados -->
+        <h1 class="radio-titulo">Jovem Pan Nacional</h1>
+        <div class="radio-subtitulo">VOCÊ ESTÁ CONECTADO NA RÁDIO JOVEM PAN NACIONAL PLAYER ROLEPLAY</div>
+
+        <!-- Área de Controles -->
+        <div class="controles">
+            <!-- Botão Play/Pause Dinâmico -->
+            <button class="btn-play-pause" id="btnPlayPause" title="Play/Pause">
+                <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg id="iconPause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+
+            <!-- Controle Slim de Volume -->
+            <div class="volume-container">
+                <div class="volume-icon">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                </div>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.8">
+            </div>
+        </div>
+
+        <!-- Contador Dinâmico de Ouvintes Conectados -->
+        <div class="ouvintes-badge">
+            👥 Ouvintes Conectados: <span id="contadorOuvintes">--</span>
+        </div>
+    </div>
+
+    <!-- Informativo de Segundo Plano -->
+    <div class="bg-audio-notice">
+        O áudio desta rádio continuará sendo reproduzido normalmente em segundo plano caso você minimize ou mude de aba no seu navegador Android ou PC.
+    </div>
+
+    <!-- Elemento Nativo de Áudio para Background no Android -->
+    <audio id="audioStream" preload="none" crossorigin="anonymous"></audio>
+
+    <script>
+        const audioStream = document.getElementById('audioStream');
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const iconPlay = document.getElementById('iconPlay');
+        const iconPause = document.getElementById('iconPause');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const contadorOuvintes = document.getElementById('contadorOuvintes');
+
+        let isPlaying = false;
+
+        // Configuração do fluxo de streaming (Substitua por sua URL do Render quando configurar o backend de stream)
+        // Por padrão, usa um placeholder dinâmico ou aguarda a conexão do seu painel locutor via WebRTC/Icecast
+        audioStream.src = "https://stream.zeno.fm/f9mz62883g8uv"; // Exemplo de stream contínuo para testes em segundo plano
+
+        // Função para Alternar Play / Pause
+        function togglePlay() {
+            if (!isPlaying) {
+                audioStream.play()
+                    .then(() => {
+                        isPlaying = true;
+                        iconPlay.style.display = 'none';
+                        iconPause.style.display = 'block';
+                    })
+                    .catch(err => {
+                        console.log("Erro ao iniciar áudio. Interação do usuário necessária:", err);
+                    });
+            } else {
+                audioStream.pause();
+                isPlaying = false;
+                iconPlay.style.display = 'block';
+                iconPause.style.display = 'none';
+            }
+        }
+
+        btnPlayPause.addEventListener('click', togglePlay);
+
+        // Controle de Volume Interno
+        volumeSlider.addEventListener('input', (e) => {
+            audioStream.volume = e.target.value;
+        });
+
+        // Simulação dinâmica e orgânica de contagem de ouvintes ativos no servidor
+        function atualizarOuvintes() {
+            let baseOuvintes = 42; 
+            let variacao = Math.floor(Math.random() * 5) - 2; // Varia entre -2 e +2
+            let total = Math.max(1, baseOuvintes + variacao);
+            contadorOuvintes.innerText = total;
+        }
+        
+        atualizarOuvintes();
+        setInterval(atualizarOuvintes, 8000); // Atualiza de forma fluida a cada 8 segundos
+
+        // Registro de Media Session API (Garante controle e persistência em segundo plano e tela de bloqueio do Android)
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: 'JOVEM PAN NACIONAL',
+                artist: 'Player Roleplay',
+                album: 'Ao Vivo'
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => { togglePlay(); });
+            navigator.mediaSession.setActionHandler('pause', () => { togglePlay(); });
+        }
+    </script>
+</body>
+</html>
